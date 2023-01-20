@@ -13,14 +13,15 @@
 
 asdf primarily requires `git` & `curl`. Here is a _non-exhaustive_ list of commands to run for _your_ package manager (some might automatically install these tools in later steps).
 
-| OS    | Package Manager | Command                            |
-| ----- | --------------- | ---------------------------------- |
-| linux | Aptitude        | `apt install curl git`             |
-| linux | DNF             | `dnf install curl git`             |
-| linux | Pacman          | `pacman -S curl git`               |
-| linux | Zypper          | `zypper install curl git`          |
-| macOS | Homebrew        | `brew install coreutils curl git`  |
-| macOS | Spack           | `spack install coreutils curl git` |
+| OS      | Package Manager | Command                              |
+| ------- | --------------- | ------------------------------------ |
+| linux   | Aptitude        | `apt install curl git`               |
+| linux   | DNF             | `dnf install curl git`               |
+| linux   | Pacman          | `pacman -S curl git`                 |
+| linux   | Zypper          | `zypper install curl git`            |
+| macOS   | Homebrew        | `brew install coreutils curl git`    |
+| macOS   | Spack           | `spack install coreutils curl git`   |
+| Windows | winget          | `winget install Git.Git MSYS2.MSYS2` |
 
 ::: tip Note
 
@@ -293,6 +294,16 @@ Add `asdf.nu` to your `~/.config/nushell/config.nu` with:
 
 Completions are automatically configured.
 :::
+
+::: details PowerShell & Git
+
+Add the following to `$PROFILE`:
+
+```powershell
+. "$($env:USERPROFILE)\.asdf\asdf.ps1"
+```
+
+Edit your MSYS2 installation's `/etc/nsswitch.conf` such that `db_home` has `windows` listed first. This will ensure that the `HOME` environment variable is set correctly. Be sure that the `unzip` package is installed.
 
 `asdf` scripts need to be sourced **after** you have set your `$PATH` and **after** you have sourced your framework (oh-my-zsh etc).
 
