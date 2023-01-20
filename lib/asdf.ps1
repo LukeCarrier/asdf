@@ -3,13 +3,23 @@ function global:asdf() {
   $command = $args[0]
   $commandArgs = @($asdf.Source) + $args[0 .. ($args.Count - 1)]
 
-  switch ($command) {
-    "shell" {
-      $commandArgs = @("export-shell-version", "powershell") + $commandArgs
-      Start-Process -Wait -NoNewWindow -FilePath bash -ArgumentList @commandArgs | Invoke-Expression
+  $pathSep = [System.IO.Path]::PathSeparator
+  $origPath = $env:PATH
+  $path = [System.Collections.ArrayList]$origPath.Split($pathSep)
+  $path.Remove("C:\Windows\system32")
+
+  try {
+    $env:PATH = $path -join $pathSep
+    switch ($command) {
+      "shell" {
+        $commandArgs = @("export-shell-version", "powershell") + $commandArgs
+        Start-Process -Wait -NoNewWindow -FilePath bash -ArgumentList @commandArgs | Invoke-Expression
+      }
+      default {
+        Start-Process -Wait -NoNewWindow -FilePath bash -ArgumentList $commandArgs
+      }
     }
-    default {
-      Start-Process -Wait -NoNewWindow -FilePath bash -ArgumentList $commandArgs
-    }
+  } finally {
+    $env:PATH = $origPath
   }
 }
