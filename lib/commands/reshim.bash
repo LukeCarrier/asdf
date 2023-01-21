@@ -83,10 +83,12 @@ write_shim_script() {
   fi
 
   local executable_name
-  executable_name=$(basename "$executable_path")
+  executable_name=$(basename "${executable_path%.exe}")
 
   local shim_path
   shim_path="$(asdf_data_dir)/shims/$executable_name"
+  local shim_path_cmd
+  shim_path_cmd="${shim_path}.cmd"
 
   local temp_dir
   temp_dir=${TMPDIR:-/tmp}
@@ -107,9 +109,14 @@ $(sort -u <"$temp_versions_path")
 exec $(asdf_dir)/bin/asdf exec "${executable_name}" "\$@" # asdf_allow: ' asdf '
 EOF
 
+  cat <<EOF >"$shim_path_cmd"
+@REM $(sort -u <"$temp_versions_path")
+@bash $(asdf_dir)\bin\asdf exec "${executable_name}" %*
+EOF
+
   rm "$temp_versions_path"
 
-  chmod +x "$shim_path"
+  chmod +x "$shim_path" "$shim_path_cmd"
 }
 
 generate_shims_for_version() {

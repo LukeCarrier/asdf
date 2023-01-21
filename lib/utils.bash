@@ -612,7 +612,8 @@ plugin_executables() {
   for bin_path in "${all_bin_paths[@]}"; do
     for executable_file in "$bin_path"/*; do
       if is_executable "$executable_file"; then
-        printf "%s\n" "$executable_file"
+        printf "%s\n" "${executable_file%%.exe}"
+        printf "%s\n" "${executable_file}.cmd"
       fi
     done
   done
@@ -620,7 +621,7 @@ plugin_executables() {
 
 is_executable() {
   local executable_path=$1
-  if [[ (-f "$executable_path") && (-x "$executable_path") ]]; then
+  if [[ ("$executable_path" != *.cmd) && (-f "$executable_path") && (-x "$executable_path") ]]; then
     return 0
   fi
   return 1
